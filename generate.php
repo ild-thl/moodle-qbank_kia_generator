@@ -39,7 +39,7 @@ use qbank_kia_generator\helper;
 $courseid = optional_param('courseid', 1, PARAM_INTEGER);
 $url = null;
 if ($courseid !== 1) {
-  $url = new moodle_url($CFG->wwwroot . "/question/bank/kia_generator/generate.php", ['id' => $courseid]);
+  $url = new moodle_url($CFG->wwwroot . "/question/bank/kia_generator/generate.php", ['courseid' => $courseid]);
 } else {
   $url = new moodle_url($CFG->wwwroot . "/question/bank/kia_generator/generate.php");
 }
@@ -58,7 +58,7 @@ if ($courseid !== 1) {
 } else {
   $PAGE->navbar->add(
     get_string("pluginname", "qbank_kia_generator"), 
-    new moodle_url('/question/bank/kia_generator/generate.php', ['id' => $course->id])
+    new moodle_url('/question/bank/kia_generator/generate.php', ['courseid' => $course->id])
   );
   $PAGE->navbar->add(get_string("editquestions", "qbank_kia_generator", $url));
 }

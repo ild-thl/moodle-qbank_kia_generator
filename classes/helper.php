@@ -16,7 +16,6 @@
 
 namespace qbank_kia_generator;
 
-use core\di;
 use stdClass;
 //use core_courseformat\output\local\content\cm\cmname;
 //use core_courseformat\base as course_format;
@@ -35,8 +34,7 @@ class helper {
     
     public function get_mods_with_content($courseid) {
         global $DB, $OUTPUT, $PAGE;
-        
-        $renderer = $PAGE->get_renderer('core');
+
         $mods = array();
 
         // mod label
@@ -121,28 +119,36 @@ class helper {
     }
 
     public function get_sourcetexts($mods) {
-        global $DB, $CFG;
+        global $DB;
         $sourcetexts = array();
-        foreach ($mods['mod_label'] as $labelid) {
-            if ($label = $DB->get_record('label', array('id' => $labelid))) {
-                $sourcetexts[] = $label->intro;
+        if (!empty($mods['mod_label'])) {
+            foreach ($mods['mod_label'] as $labelid) {
+                if ($label = $DB->get_record('label', array('id' => $labelid))) {
+                    $sourcetexts[] = $label->intro;
+                }
             }
         }
-        foreach ($mods['mod_page'] as $pageid) {
-            if ($page = $DB->get_record('page', array('id' => $pageid))) {
-                $sourcetexts[] = $page->content;
+        if (!empty($mods['mod_page'])) {
+            foreach ($mods['mod_page'] as $pageid) {
+                if ($page = $DB->get_record('page', array('id' => $pageid))) {
+                    $sourcetexts[] = $page->content;
+                }
             }
         }
-        foreach ($mods['mod_folder'] as $fileid) {
-            if ($content = $this->get_text_from_file($fileid)) {
-                $sourcetexts[] = $content;
+        if (!empty($mods['mod_folder'])) {
+            foreach ($mods['mod_folder'] as $fileid) {
+                if ($content = $this->get_text_from_file($fileid)) {
+                    $sourcetexts[] = $content;
+                }
             }
         }
-        foreach ($mods['mod_resource'] as $resourceid) {
-            if ($files = $this->get_resource_files($resourceid)) {
-                foreach ($files as $file) {
-                    if ($sourcetext = $this->get_text_from_file($file->get_id())) {
-                        $sourcetexts[] = $sourcetext;
+        if (!empty($mods['mod_resource'])) {
+            foreach ($mods['mod_resource'] as $resourceid) {
+                if ($files = $this->get_resource_files($resourceid)) {
+                    foreach ($files as $file) {
+                        if ($sourcetext = $this->get_text_from_file($file->get_id())) {
+                            $sourcetexts[] = $sourcetext;
+                        }
                     }
                 }
             }
@@ -205,7 +211,7 @@ class helper {
             //'application/rtf',
             //'text/markdown'
         ];
-        return in_array($mimetype, $allowedmimetypes);
+        return in_array($mimetype, $allowedmimetypes, true);
     }
 
     /**
@@ -334,6 +340,7 @@ class helper {
             }
 
             $imagebase64 = 'data:image/png;base64,'.base64_encode($binary);
+            // OCR each rendered page independently to avoid losing content on large PDFs.
             $result = $this->extract_pdf_image_text($imagebase64);
             if (!empty($result['success'])) {
                 $processedpages++;
@@ -611,12 +618,12 @@ class helper {
 
         // Do anything before that we need to.
         if (!$qformat->importpreprocess()) {
-            throw new moodle_exception('cannotimport', '', $thispageurl->out());
+            throw new \moodle_exception('cannotimport');
         }
 
         // Process the uploaded file.
         if (!$qformat->importprocess()) {
-            throw new moodle_exception('cannotimport', '', $thispageurl->out());
+            throw new \moodle_exception('cannotimport');
         }
 
         // istead of overwriting the function importpostprocess() we write our code here
@@ -630,7 +637,7 @@ class helper {
 
         // In case anything needs to be done after.
         if (!$qformat->importpostprocess()) {
-            throw new moodle_exception('cannotimport', '', $thispageurl->out());
+            throw new \moodle_exception('cannotimport');
         }
 
         // Clean up the temporary file.

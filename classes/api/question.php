@@ -34,12 +34,17 @@ require_once($CFG->libdir . '/questionlib.php');
 global $DB;
 
 $response = json_decode(file_get_contents('php://input'), true);
+if (!is_array($response)) {
+    http_response_code(400);
+    die();
+}
 
 // Clean submitted data
 $clean_response = [
     'courseid' => clean_param($response['courseid'], PARAM_INT),
     'qtype' => clean_param($response['qtype'], PARAM_NOTAGS),
     'categoryid' => clean_param($response['categoryid'], PARAM_INT),
+    'sesskey' => clean_param($response['sesskey'] ?? '', PARAM_RAW_TRIMMED),
     'questions' => []
 ];
 foreach ($response['questions'] as $question => $question_data) {
@@ -52,6 +57,10 @@ foreach ($response['questions'] as $question => $question_data) {
 }
 
 require_login();
+if (!confirm_sesskey($clean_response['sesskey'])) {
+    http_response_code(403);
+    die();
+}
 $course_context = context_course::instance($clean_response['courseid']);
 if (!has_capability('moodle/course:manageactivities', $course_context)) {
     http_response_code(401);

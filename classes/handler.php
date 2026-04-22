@@ -53,6 +53,7 @@ class handler {
             $presetmessages = $this->build_messages_from_presets($format, $primer, $instructions, $example);
             
             foreach ($this->sourcetext as $text) {
+                // Source chunks are appended as system context so the model sees them as hard constraints.
                 array_push($presetmessages, ["role" => "system", "content" => $text]);
             }
             array_push($presetmessages, ["role" => "user", "content" => "Now generate in total ".$number_of_questions." questions for me."]);
@@ -232,6 +233,7 @@ class handler {
             if ($content === '') {
                 continue;
             }
+            // myai generate_question currently accepts one prompt string; preserve role boundaries explicitly.
             $promptparts[] = $role.":\n".$content;
         }
         return implode("\n\n", $promptparts);

@@ -67,6 +67,7 @@ const buildQuestionObj = () => {
     questions['courseid'] = document.querySelector('#courseid').value;
     questions['qtype'] = document.querySelector('#qtype').value;
     questions['categoryid'] = document.querySelector('#categoryid').value;
+    questions['sesskey'] = M.cfg.sesskey;
 
     return questions
 }
