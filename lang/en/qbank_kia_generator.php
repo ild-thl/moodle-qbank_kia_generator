@@ -265,3 +265,5 @@ $string['herestheresponse'] = "\n\nHere's the response received from GPT:\n\"";
 
 $string['confirmdelete_question'] = 'Delete this question?';
 $string['wait'] = 'Please wait...';
+$string['pathtopdftoppm'] = 'Path to pdftoppm';
+$string['pathtopdftoppm_desc'] = 'Absolute path to the pdftoppm executable used to render PDF pages into images (for example /usr/bin/pdftoppm).';

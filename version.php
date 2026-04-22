@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'qbank_kia_generator';
 $plugin->release = '1.0';
-$plugin->version = 2026042200;
+$plugin->version = 2026042202;
 $plugin->requires = 2022112800;
 $plugin->maturity = MATURITY_STABLE;
 

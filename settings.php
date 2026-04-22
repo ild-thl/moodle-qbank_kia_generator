@@ -28,24 +28,12 @@ if ($hassiteconfig) {
     $settings = new admin_settingpage('qbank_kia_generator_settings', new lang_string('pluginname', 'qbank_kia_generator'));
 
     if ($ADMIN->fulltree) {
-        
-        // Mistral API key
-        $settings->add(new admin_setting_configpasswordunmask(
-            'qbank_kia_generator/mistral_api_key',
-            get_string('mistral_api_key', 'qbank_kia_generator'),
-            get_string('mistral_api_key_desc', 'qbank_kia_generator'),
-            '' // default
+        $settings->add(new admin_setting_configexecutable(
+            'qbank_kia_generator/pathtopdftoppm',
+            get_string('pathtopdftoppm', 'qbank_kia_generator'),
+            get_string('pathtopdftoppm_desc', 'qbank_kia_generator'),
+            '/usr/bin/pdftoppm'
         ));
-
-        // emptypythonpathwarning
-        $pythonpath = get_config('moodle', 'pathtopython');
-        if (empty($pythonpath)) {
-            $settings->add( new admin_setting_heading(
-                'qbank_kia_generator/emptypythonpathwarning',
-                '',
-                '<div class="alert alert-warning">' . get_string('emptypythonpathwarning', 'qbank_kia_generator') . '</div>'
-            ));
-        }
 
         // Presets
         $settings->add( new admin_setting_heading(

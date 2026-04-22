@@ -271,55 +271,131 @@ class helper {
     }
 
     /**
-     * Helper method for getting text from a PDF document
+     * Helper method for getting text from a PDF document.
+     * Converts PDF pages to base64 images and extracts text via MyAI extract_pdf action.
+     *
      * @param object $file: The file object to get the text from
      * @return string: The text from the PDF document or false on failure
      */
-
     public function get_text_from_pdf_document($file) {
-        global $CFG;
-        // Only process PDF files
         if ($file->get_mimetype() !== 'application/pdf') {
             return false;
         }
-        $tempfile = $file->copy_content_to_temp();
-        
-        // read PDF content
-        $python = get_config('moodle', 'pathtopython');
-        if (empty($python)) {
-            throw new \moodle_exception('emptypythonpathwarning', 'qbank_kia_generator');
-        }
-        $script = escapeshellarg($CFG->dirroot . '/question/bank/kia_generator/python/extract_pdf.py');
-        $arg = escapeshellarg($tempfile);
-        putenv("MISTRAL_API_KEY=". get_config('qbank_kia_generator', 'mistral_api_key'));
-        
-        $command = "$python $script $arg";
 
-        if ($output = shell_exec($command)) {
-            
-            // if $output starts with "Error" than print an error message
-            if (strpos($output, 'Error') === 0) {
-                throw new \moodle_exception('errorprocessingpdf', 'qbank_kia_generator', '', $output);
-            }
-            // clean pdf text
-            // Entfernt nicht druckbare Zeichen (außer Standard-Zeichen wie Zeilenumbrüche, Tabs etc.)
-            $output = preg_replace('/[[:^print:]]/', '', $output);
-            // UTF-8 sicherstellen
-            $output = mb_convert_encoding($output, 'UTF-8', 'UTF-8');
-            // Entferne überlange Whitespaces
-            $output = preg_replace('/\s+/', ' ', $output);
-            // delete tempfile
-            if (file_exists($tempfile)) {
-                unlink($tempfile);
-            }
-            return trim($output);
-        } 
-
-        // delete tempfile
-        if (file_exists($tempfile)) {
-            unlink($tempfile);
+        $pdftoppm = get_config('qbank_kia_generator', 'pathtopdftoppm');
+        if (empty($pdftoppm)) {
+            $pdftoppm = '/usr/bin/pdftoppm';
         }
-        return false;
+        $pdftoppm = str_replace('\\', '/', $pdftoppm);
+        $pdftoppmcheck = shell_exec(escapeshellarg($pdftoppm).' -v 2>&1');
+        if ($pdftoppmcheck === null || stripos($pdftoppmcheck, 'pdftoppm version') === false) {
+            throw new \moodle_exception(
+                'errorprocessingpdf',
+                'qbank_kia_generator',
+                '',
+                'PDF page rendering failed: pdftoppm is not installed or not executable at "'.$pdftoppm.'".'
+            );
+        }
+
+        $tempbase = make_temp_directory('qbank_kia_generator/pdf_render_'.uniqid());
+        $tempbase = str_replace('\\', '/', $tempbase);
+        $pdffile = $tempbase.'/source.pdf';
+        $imageprefix = $tempbase.'/page';
+
+        file_put_contents($pdffile, $file->get_content());
+
+        $cmd = escapeshellarg($pdftoppm).' -png '.escapeshellarg($pdffile).' '.escapeshellarg($imageprefix).' 2>&1';
+        $output = [];
+        $returnvar = 0;
+        exec($cmd, $output, $returnvar);
+        if ($returnvar !== 0) {
+            $this->cleanup_temp_directory($tempbase);
+            throw new \moodle_exception(
+                'errorprocessingpdf',
+                'qbank_kia_generator',
+                '',
+                'pdftoppm failed: '.implode("\n", $output)
+            );
+        }
+
+        $generatedfiles = glob($imageprefix.'-*.png');
+        if (empty($generatedfiles)) {
+            $this->cleanup_temp_directory($tempbase);
+            return false;
+        }
+        natsort($generatedfiles);
+
+        $pdfcontent = '';
+        $processedpages = 0;
+        foreach ($generatedfiles as $generatedfile) {
+            $binary = file_get_contents($generatedfile);
+            if ($binary === false) {
+                continue;
+            }
+
+            $imagebase64 = 'data:image/png;base64,'.base64_encode($binary);
+            $result = $this->extract_pdf_image_text($imagebase64);
+            if (!empty($result['success'])) {
+                $processedpages++;
+                $pagecontent = trim((string)($result['generatedcontent'] ?? ''));
+                if ($pagecontent !== '') {
+                    $pdfcontent .= 'Page '.$processedpages.":\n".$pagecontent."\n\n";
+                }
+            }
+        }
+
+        $this->cleanup_temp_directory($tempbase);
+        $pdfcontent = trim((string)$pdfcontent);
+        return $pdfcontent !== '' ? $pdfcontent : false;
+    }
+
+    /**
+     * Extract text from one PDF page image using MyAI.
+     *
+     * @param string $imagebase64
+     * @return array
+     */
+    private function extract_pdf_image_text(string $imagebase64): array {
+        global $USER;
+
+        $action = new \aiprovider_myai\aiactions\extract_pdf(
+            userid: $USER->id,
+            imagebase64: $imagebase64,
+            prompttext: '',
+            contextid: \context_system::instance()->id,
+        );
+        $manager = \core\di::get(\core_ai\manager::class);
+        $response = $manager->process_action($action);
+
+        return [
+            'success' => $response->get_success(),
+            'generatedcontent' => $response->get_response_data()['generatedcontent'] ?? '',
+        ];
+    }
+
+    /**
+     * Recursively remove a temporary directory.
+     *
+     * @param string $directory
+     * @return void
+     */
+    private function cleanup_temp_directory(string $directory): void {
+        if (!is_dir($directory)) {
+            return;
+        }
+
+        $items = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($items as $item) {
+            if ($item->isDir()) {
+                @rmdir($item->getPathname());
+            } else {
+                @unlink($item->getPathname());
+            }
+        }
+        @rmdir($directory);
     }
 
     /**

@@ -265,3 +265,5 @@ $string['herestheresponse'] = "\n\nGPT-Antwort:\n\"";
 
 $string['confirmdelete_question'] = 'Diese Frage löschen?';
 $string['wait'] = 'Bitte warten...';
+$string['pathtopdftoppm'] = 'Pfad zu pdftoppm';
+$string['pathtopdftoppm_desc'] = 'Absoluter Pfad zur pdftoppm-Datei, die fuer das Rendern von PDF-Seiten in Bilder verwendet wird (z. B. /usr/bin/pdftoppm).';
