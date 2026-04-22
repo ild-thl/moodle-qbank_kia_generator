@@ -1,0 +1,73 @@
+.qbank_kia_generator.block .card-text.content {
+    text-align: center;
+}
+.qbank_kia_generator-question {
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    transition: all 0.2s ease;
+    border: thin solid #dee2e6;
+}
+
+.qbank_kia_generator-answer {
+    position: relative;
+}
+
+.qbank_kia_generator-question input, .qbank_kia_generator-question textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+}
+
+.qbank_kia_generator-text-container {
+    width: 100%;
+    margin-right: 1rem;
+}
+
+.qbank_kia_generator-question input {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background 0.2s ease;
+    border: thin solid #dee2e6;
+}
+
+.qbank_kia_generator-delete {
+    background: #ffffff;
+    color: #ff0000;
+    border-radius: .25rem;
+    border: none;
+}
+
+.qbank_kia_generator-question textarea.qbank_kia_generator-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.qbank_kia_generator-question input.qbank_kia_generator-correct {
+    background: #91e891;
+}
+
+.qbank_kia_generator-answer:hover .qbank_kia_generator-markCorrectButton {
+    pointer-events: all;
+    opacity: 1;
+}
+
+.qbank_kia_generator-markCorrectButton {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.4rem;
+    padding: 0.25rem 0.5rem;
+    background: green;
+    border: none;
+    border-radius: 0.25rem;
+    color: white;
+    font-size: 0.75rem;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+.qbank_kia_generator-addToQBank {
+    margin-right: 1rem;
+}
