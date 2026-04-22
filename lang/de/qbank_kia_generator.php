@@ -26,16 +26,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['questioncategory'] = 'Fragen-Kategorie';
-$string['defaultmodel'] = 'Default Modell';
-$string['defaultmodellabel'] = 'Dieses KI Modell wird per Default verwendet. Das kann individuell im Kurs angepasst werden.';
-$string['defaultmodelnotavailable'] = 'Das ausgewählte KI Modell ist nicht verfügbar. Bitte wähle ein anderes Modell aus der Liste der verfügbaren Modelle.';
 $string['editpreset'] = 'Preset bearbeiten bevor Anfrage gesendet wird';
-$string['emptypythonpathwarning'] = 'Warnung: Der Python-Pfad ist nicht konfiguriert. Bitte setze ihn in <a href="search.php?query=pathtopython">der Site-Administration</a>.<br>Ohne diesen Pfad kann der KIA KI Fragen Generator keine Inhalte aus PDF verarbeiten.<br>Mögliche Python-Pfade sind:<br>Linux: /usr/bin/python3<br>Windows: C:\laragon\bin\python\python-3.13\python.exe';
 $string['errorprocessingpdf'] = 'Fehler beim Verarbeiten der PDF-Datei. Möglicherweise ist das Python-Paket "PyMuPDF" nicht installiert. Bitte installiere es mit dem Befehl "pip install PyMuPDF".';
 $string['kia_generator:generatequestions'] = 'Fragen generieren';
-
-$string['mistral_api_key'] = 'Mistral API Key';
-$string['mistral_api_key_desc'] = 'Mistral wird benötigt, um die Inhalte aus PDF-Dateien zu extrahieren. Logge dich auf <a href="https://https://mistral.ai/">mistral.ai</a> ein und erstelle einen API Key unter "Try the API".';
 $string['pluginname'] = 'KIA KI Fragen Generator';
 $string['preset'] = 'Preset';
 $string['presetname'] = 'Name des Presets';
@@ -231,21 +224,7 @@ $string['title'] = 'KIA KI Fragen generieren';
 
 $string['privacy:metadata'] = 'Der KIA KI Fragen Generator speichert keine persönlichen Nutzerdaten noch werden solche an Dritte gesendet. Allerdings werden werden alle Daten, die von Trainer:innen übermittelt werden um Fragen zu generieren, komplett an externe Systeme gesendet. Dort unterliegen sie den Datenschutzbestimmungen der entsprechenden Anbieter, wie z.B. OpenAI (https://openai.com/api/policies/privacy/). Der so generierte Fragentext kann dann auf diesem System gespeichert werden.';
 
-$string['model'] = 'Modell';
-$string['modellabel'] = 'Modell, das zum generieren der Fragen verwendet werden soll';
-
 $string['sourcetext'] = 'Inhalt';
-$string['qtype'] = 'Fragetyp';
-$string['qtype_help'] = 'Die Fragetypen sind nach ihrer Komplexität geordnet. Komplexere Fragetypen reduziert die Fähigkeit der GPT\'s Anweisungen zu folgen oder sinnvolle Fragen zu gerieren.';
-$string['qtype_prompt_multichoice'] = 'Multiple-Choice';
-$string['qtype_prompt_multichoice_descr'] = 'Beispiel einer Frage vom Typ Multiple-Choice im JSON Format.';
-$string['qtype_prompt_multichoice_default'] = '[{"question": "On what date did construction start?", "answers": {"A": "1882", "B": "1893", "C": "1926", "D": "1918"}, "correct": "A"}, {"question": "Who was the original architect of the basilica?", "answers": {"A": "Antoni Gaudi", "B": "Francsico de Goya", "C": "Francisco de Paula del Villar", "D": "Louis Sullivan"}, "correct": "C"}, {"question": "How much of the basilica was finished when Gaudi died?", "answers": {"A": "Over a third", "B": "Nearly all of it", "C": "Around half", "D": "Less than a quarter"}, "correct": "D"}]';
-$string['qtype_prompt_shortanswer'] = 'Kurzantwort';
-$string['qtype_prompt_shortanswer_descr'] = 'Beispiel einer Frage vom Typ Kurzantwort im JSON Format.';
-$string['qtype_prompt_shortanswer_default'] = '[{"question": "On what date did construction start?", "answers": {"A": "19 March 1882"}}, {"question": "Who was the original architect of the basilica?", "answers": {"A": "Francisco de Paula del Villar"}}, {"question": "How much of the project was completed when Gaudi died?", "answers": {"A": "Less than a quarter"}}]';
-$string['qtype_prompt_truefalse'] = 'Wahr/Falsch';
-$string['qtype_prompt_truefalse_descr'] = 'Beispiel einer Frage vom Typ Wahr/Falsch im JSON Format.';
-$string['qtype_prompt_truefalse_default'] = '[{"question": "Construction started on 19 March 1882", "answers": {"A": "True"}}, {"question": "The original architect was Antoni Gaudi", "answers": {"A": "False"}}, {"question": "Over half of the basilica was finished when Gaudi died.", "answers": {"A": "False"}}]';
 $string['modselection'] = 'Wähle Aktivitäten als Inhalt';
 $string['numquestions'] = 'Wie viele Fragen sollen generiert werden?';
 $string['numquestions_help'] = 'Die Anzahl der generierten Fragen kann von der gewünschten Anzahl abweichen wenn der Inhaltstext größer oder der Fragetyp komplexer wird.';

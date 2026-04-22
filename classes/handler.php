@@ -60,7 +60,6 @@ class handler {
         else {
             throw new \moodle_exception("preset_error");
         }
-        //print_object($presetmessages);die();
         $responsecontent = $this->make_api_request($presetmessages);
         
         if ($format == 'GIFT') {
@@ -194,27 +193,6 @@ class handler {
     }
 
     /**
-     * If GPT fails to provide parseable JSON, we run it through one more prompt to try to massage the data into something we can use
-     * @param string responsetext: The text to convert into JSON
-     * @return string: The JSON string
-     */
-    private function attempt_json_conversion($responsetext) {
-        $messages = [
-            ["role" => "system", "content" => "Please convert any given input (including plain text) into valid JSON. The input does not need to be JSON format. Do not return anything else except properly formatted JSON based on the input."],
-            ["role" => "user", "content" => $responsetext]
-        ];
-
-        $responsecontent = $this->make_api_request($messages);
-        $completion = json_decode($responsecontent, true);
-        if (!$completion) {
-            echo get_string('error_gpt_format', 'qbank_kia_generator');
-            throw new \moodle_exception("gpt_format_error", "qbank_kia_generator", "", get_string('error_gpt_format', 'qbank_kia_generator') . $responsecontent . '"');
-        }
-
-        return $completion;
-    }
-
-    /**
      * Helper method for making API requests
      * @param Array messages: The list of messages to send to OpenAI
      * @return Object: The parsed JSON response
@@ -259,35 +237,4 @@ class handler {
         return implode("\n\n", $promptparts);
     }
     
-    /**
-     * Given an array of generated questions, filter them for valid questions, and clean the generated text
-     * @param Array questions: The array of generated questions
-     * @return Array: The cleaned array of questions
-     */
-    function clean_questions($questions) {
-        $cleaned_questions = [];
-
-        foreach ($questions as $index => $question) {
-            if (array_key_exists('question', $question) && $question['question'] && array_key_exists('answers', $question)) {
-                $cleaned_question = [
-                    'question' => clean_param($question['question'], PARAM_NOTAGS),
-                    'answers' => []
-                ];
-
-                foreach ($question['answers'] as $choice => $text) {
-                    if ($text) {
-                        $cleaned_question['answers'][$choice] = clean_param($text, PARAM_NOTAGS);
-                    }
-                }
-
-                if (array_key_exists('correct', $question)) {
-                    $cleaned_question['correct'] = $question['correct'];
-                }
-                array_push($cleaned_questions, $cleaned_question);
-            }
-        }
-    
-        return $questions;
-    }
-
 }

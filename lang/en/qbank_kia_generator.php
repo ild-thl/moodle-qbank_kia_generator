@@ -26,16 +26,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['questioncategory'] = 'Question category';
-$string['defaultmodel'] = 'Default model';
-$string['defaultmodellabel'] = 'This AI Model will be used as default. It can be changed in the course.';
-$string['defaultmodelnotavailable'] = 'The selected AI model is not available. Please select another model from the list of available models.';
 $string['editpreset'] = 'Edit preset before submitting';
-$string['emptypythonpathwarning'] = 'Warning: The Python path is not configured. Please set it in <a href="search.php?query=pathtopython">Site administration</a>.<br>Without this path, the KIA AI Question Generator cannot process content from PDFs.<br>Possible Python paths are:<br>Linux: /usr/bin/python3<br>Windows: C:\laragon\bin\python\python-3.13\python.exe';
 $string['errorprocessingpdf'] = 'Error processing the PDF file. The Python package "PyMuPDF" may not be installed. Please install it using the command "pip install PyMuPDF".';
 $string['kia_generator:generatequestions'] = 'Generate questions';
-
-$string['mistral_api_key'] = 'Mistral API Key';
-$string['mistral_api_key_desc'] = 'Mistral is required to extract content from PDF files. Log in to <a href="https://mistral.ai/">mistral.ai</a> and create an API key under "Try the API".';
 $string['pluginname'] = 'KIA AI Question Generator';
 $string['preset'] = 'Preset';
 $string['presetname'] = 'Preset name';
@@ -231,21 +224,7 @@ $string['title'] = 'Generate KIA AI questions';
 
 $string['privacy:metadata'] = 'KIA AI Question Generator, by default, neither stores personal user data nor sends it to third parties. However, text submitted by teachers in order to generate questions is sent in its entirety to third parties, and is then subject to their privacy policy, e.g. OpenAI (https://openai.com/api/policies/privacy/), which may store messages in order to improve the API. Additionally, this text is then used to generate questions that may be saved to the site.';
 
-$string['model'] = 'Model';
-$string['modellabel'] = 'The model to use in order to generate questions';
-
 $string['sourcetext'] = 'Source text';
-$string['qtype'] = 'Question type';
-$string['qtype_help'] = 'Question types are ordered by their complexity. More complex question types will reduce GPT\'s ability to follow instructions or generate coherent questions.';
-$string['qtype_prompt_multichoice'] = 'Multiple choice';
-$string['qtype_prompt_multichoice_descr'] = 'Example of the output JSON of a question of the type Multiple choice.';
-$string['qtype_prompt_multichoice_default'] = '[{"question": "On what date did construction start?", "answers": {"A": "1882", "B": "1893", "C": "1926", "D": "1918"}, "correct": "A"}, {"question": "Who was the original architect of the basilica?", "answers": {"A": "Antoni Gaudi", "B": "Francsico de Goya", "C": "Francisco de Paula del Villar", "D": "Louis Sullivan"}, "correct": "C"}, {"question": "How much of the basilica was finished when Gaudi died?", "answers": {"A": "Over a third", "B": "Nearly all of it", "C": "Around half", "D": "Less than a quarter"}, "correct": "D"}]';
-$string['qtype_prompt_shortanswer'] = 'Short answer';
-$string['qtype_prompt_shortanswer_descr'] = 'Example of the output JSON of a question of the type Short answer.';
-$string['qtype_prompt_shortanswer_default'] = '[{"question": "On what date did construction start?", "answers": {"A": "19 March 1882"}}, {"question": "Who was the original architect of the basilica?", "answers": {"A": "Francisco de Paula del Villar"}}, {"question": "How much of the project was completed when Gaudi died?", "answers": {"A": "Less than a quarter"}}]';
-$string['qtype_prompt_truefalse'] = 'True/False';
-$string['qtype_prompt_truefalse_descr'] = 'Example of the output JSON of a question of the type True/False.';
-$string['qtype_prompt_truefalse_default'] = '[{"question": "Construction started on 19 March 1882", "answers": {"A": "True"}}, {"question": "The original architect was Antoni Gaudi", "answers": {"A": "False"}}, {"question": "Over half of the basilica was finished when Gaudi died.", "answers": {"A": "False"}}]';
 $string['modselection'] = 'Choose activities as content';
 $string['numquestions'] = 'Number of questions to generate';
 $string['numquestions_help'] = 'GPT will be asked to generate this many questions, but it is just a request. Larger input text or more complex question types will limit GPT\'s ability to match the number asked for.';

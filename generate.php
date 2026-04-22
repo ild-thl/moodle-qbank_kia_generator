@@ -111,10 +111,8 @@ if ($mform->is_cancelled()) {
   $primer = $fromform->{'presetprimer'.$i};
   $instructions = $fromform->{'presetinstructions'.$i};
   $example = $fromform->{'presetexample'.$i};
-  //print_object($sourcetexts); die();
   $handler = new handler($sourcetexts, \context_course::instance($course->id)->id);
   $questions = $handler->fetch_response($fromform->number_of_questions, $format, $primer, $instructions, $example);
-  //print_object($questions); die();
   // call helper function to import the questions into the question bank
   // on success, redirect to question bank page 
   if ($helper->import_questions_from_string($questions, $fromform->category, $course, $format)) {

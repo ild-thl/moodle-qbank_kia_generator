@@ -45,11 +45,6 @@ class generate_form extends moodleform {
             $checkboxes[] = $mform->createElement('checkbox', $mod->name.'_'.$mod->id, '', $mod->title);
         }
         $mform->addGroup($checkboxes, 'modgroup', get_string('modselection', 'qbank_kia_generator'), '<br>', false);
-        /*
-        $qtypes = ['truefalse' => get_string('qtype_prompt_truefalse', 'qbank_kia_generator'), 'shortanswer' => get_string('qtype_prompt_shortanswer', 'qbank_kia_generator'), 'multichoice' => get_string('qtype_prompt_multichoice', 'qbank_kia_generator')];
-        $mform->addElement('select', 'qtype', get_string('qtype', 'qbank_kia_generator'), $qtypes);
-        $mform->addHelpButton('qtype', 'qtype', 'qbank_kia_generator');
-        */
         $presets = $helper->get_presets(); // ['preset1' => 'Multiple-Choice Fragen (GIFT)']
         $mform->addElement('select', 'preset', get_string('preset', 'qbank_kia_generator'), $presets);
         $mform->addHelpButton('preset', 'presethelp', 'qbank_kia_generator');
