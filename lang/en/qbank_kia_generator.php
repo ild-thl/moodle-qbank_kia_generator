@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['questioncategory'] = 'Question category';
 $string['editpreset'] = 'Edit preset before submitting';
-$string['errorprocessingpdf'] = 'Error processing the PDF file. The Python package "PyMuPDF" may not be installed. Please install it using the command "pip install PyMuPDF".';
+$string['errorprocessingpdf'] = 'Error processing the PDF file: {$a}';
 $string['kia_generator:generatequestions'] = 'Generate questions';
 $string['pluginname'] = 'KIA AI Question Generator';
 $string['preset'] = 'Preset';

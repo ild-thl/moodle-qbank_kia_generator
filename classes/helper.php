@@ -333,6 +333,7 @@ class helper {
 
         $pdfcontent = '';
         $processedpages = 0;
+        $errors = [];
         foreach ($generatedfiles as $generatedfile) {
             $binary = file_get_contents($generatedfile);
             if ($binary === false) {
@@ -348,11 +349,16 @@ class helper {
                 if ($pagecontent !== '') {
                     $pdfcontent .= 'Page '.$processedpages.":\n".$pagecontent."\n\n";
                 }
+            } else {
+                $errors[] = (string)($result['error'] ?? 'Unknown OCR error.');
             }
         }
 
         $this->cleanup_temp_directory($tempbase);
         $pdfcontent = trim((string)$pdfcontent);
+        if ($pdfcontent === '' && !empty($errors)) {
+            throw new \moodle_exception('errorprocessingpdf', 'qbank_kia_generator', '', $errors[0]);
+        }
         return $pdfcontent !== '' ? $pdfcontent : false;
     }
 
@@ -373,10 +379,29 @@ class helper {
         );
         $manager = \core\di::get(\core_ai\manager::class);
         $response = $manager->process_action($action);
+        $errorcode = (int)$response->get_errorcode();
+        $errormessage = trim((string)$response->get_errormessage());
+        $responsemessage = $errormessage;
+        if ($responsemessage !== '') {
+            $decoded = json_decode($responsemessage, true);
+            if (is_array($decoded)) {
+                if (!empty($decoded['detail']) && is_string($decoded['detail'])) {
+                    $responsemessage = $decoded['detail'];
+                } else if (!empty($decoded['message']) && is_string($decoded['message'])) {
+                    $responsemessage = $decoded['message'];
+                }
+            }
+        }
+        if ($responsemessage === '') {
+            $responsemessage = 'Unknown OCR error.';
+        }
 
         return [
             'success' => $response->get_success(),
             'generatedcontent' => $response->get_response_data()['generatedcontent'] ?? '',
+            'errorcode' => $errorcode,
+            'errormessage' => $errormessage,
+            'error' => 'PDF OCR failed ('.$errorcode.'): '.$responsemessage,
         ];
     }
 
